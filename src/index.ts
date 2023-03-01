@@ -14,6 +14,7 @@ export default {
       body: request.body,
       headers: {
         Authorization: "Bearer " + authToken,
+        "Content-Type": "application/json",
         "Notion-Version": "2022-06-28",
       },
       method: request.method,

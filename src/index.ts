@@ -1,17 +1,14 @@
-export interface Env {
-  NOTION_API_KEY: string;
-}
-
 const API_END_POINT = "https://api.notion.com/v1";
 
 export default {
-  async fetch(request: Request, env: Env) {
+  async fetch(request: Request) {
+    const NOTION_API_KEY = request.headers.get("Authorization");
     const url = new URL(request.url);
     const requestUrl = `${API_END_POINT}${url.pathname}`;
     const result = await fetch(requestUrl, {
       body: request.body,
       headers: {
-        Authorization: "Bearer " + env.NOTION_API_KEY,
+        Authorization: "Bearer " + NOTION_API_KEY,
         "Notion-Version": "2022-06-28",
       },
       method: request.method,

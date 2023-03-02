@@ -12,5 +12,8 @@
     "start": "wrangler dev",
     "deploy": "wrangler publish",
     "test": "vitest"
+  },
+  "volta": {
+    "node": "18.14.0"
   }
 }

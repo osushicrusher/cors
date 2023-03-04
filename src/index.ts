@@ -6,6 +6,9 @@ const API_END_POINT = "https://api.notion.com/v1";
 
 export default {
   async fetch(request: Request, env: Env) {
+    if (request.method === "OPTIONS") {
+      return handleOptions();
+    }
     const authHeader = request.headers.get("Authorization");
 
     if (!authHeader) {
@@ -14,9 +17,9 @@ export default {
     // split the auth header to get the Bearer token
     const authToken = authHeader.split(" ")[1];
 
-    if (authToken !== env.NOTION_API_KEY) {
-      return new Response("NOTION_API_KEY does not match", { status: 401 });
-    }
+    // if (authToken !== env.NOTION_API_KEY) {
+    //   return new Response("NOTION_API_KEY does not match", { status: 401 });
+    // }
 
     const url = new URL(request.url);
     const requestUrl = `${API_END_POINT}${url.pathname}`;
@@ -32,14 +35,24 @@ export default {
 
     const { body, status, statusText } = result;
     return new Response(body, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Content-Type": "application/json",
-      },
+      headers: getCorsHeaders(),
       status,
       statusText,
     });
   },
 };
+
+const getCorsHeaders = () => {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization, Notion-Version",
+  };
+};
+
+function handleOptions() {
+  return new Response(null, {
+    headers: getCorsHeaders(),
+  });
+}
